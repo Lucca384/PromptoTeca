@@ -8,6 +8,7 @@ import { nichePrompts } from './prompts-niches';
 import { megaPrompts } from './prompts-mega';
 import { extendedPrompts } from './prompts-extended';
 import { bulkPrompts } from './prompts-bulk';
+import { getCategoryBySlug } from '@/data/categories';
 
 // Combine all prompts
 export const promptsData: Prompt[] = [
@@ -40,6 +41,26 @@ export function getPromptBySlug(slug: string): Prompt | undefined {
 // Get prompts by category
 export function getPromptsByCategory(categoryId: string): Prompt[] {
   return promptsData.filter(p => p.categoryId === categoryId);
+}
+
+export function getPromptsByCategorySlug(slug: string): Prompt[] {
+  const category = getCategoryBySlug(slug);
+  if (!category) {
+    return [];
+  }
+
+  if (!category.parentId) {
+    const subcategoryIds = category.subcategories?.map(s => s.id) || [];
+    return promptsData.filter(
+      p => p.categoryId === category.id || subcategoryIds.includes(p.categoryId)
+    );
+  }
+
+  return promptsData.filter(p => p.categoryId === category.id);
+}
+
+export function getPromptCountByCategorySlug(slug: string): number {
+  return getPromptsByCategorySlug(slug).length;
 }
 
 // Get featured prompts
@@ -100,13 +121,8 @@ export function filterPrompts(options: {
   search?: string;
   sort?: string;
 }): Prompt[] {
-  let filtered = [...promptsData];
-  
-  // Category filter
-  if (options.category) {
-    filtered = filtered.filter(p => p.categoryId === options.category);
-  }
-  
+  let filtered = options.category ? getPromptsByCategorySlug(options.category) : [...promptsData];
+   
   // Type filter
   if (options.type && options.type !== 'all') {
     filtered = filtered.filter(p => p.type === options.type);

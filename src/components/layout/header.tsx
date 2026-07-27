@@ -98,10 +98,12 @@ export function Header({ onSearch, searchValue = '', onLogout }: HeaderProps) {
 
             {/* Logout */}
             <div className="hidden md:block">
-              <Button variant="ghost" size="sm" onClick={onLogout} aria-label="Sair">
-                <LogOut className="w-4 h-4 mr-2" />
-                Sair
-              </Button>
+              {onLogout && (
+                <Button variant="ghost" size="sm" onClick={onLogout} aria-label="Sair">
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sair
+                </Button>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -154,17 +156,19 @@ export function Header({ onSearch, searchValue = '', onLogout }: HeaderProps) {
                 </Link>
               );
             })}
-            <Button
-              variant="ghost"
-              className="w-full justify-start"
-              onClick={() => {
-                setIsMenuOpen(false);
-                onLogout?.();
-              }}
-            >
-              <LogOut className="w-5 h-5 mr-2" />
-              Sair
-            </Button>
+            {onLogout && (
+              <Button
+                variant="ghost"
+                className="w-full justify-start"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  onLogout();
+                }}
+              >
+                <LogOut className="w-5 h-5 mr-2" />
+                Sair
+              </Button>
+            )}
           </nav>
         </div>
       )}

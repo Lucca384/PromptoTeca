@@ -1,9 +1,10 @@
-'use client';
+﻿'use client';
 
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { PromptGrid } from '@/components/prompts/prompt-grid';
 import { Prompt } from '@/types';
 import { Sparkles, Calendar } from 'lucide-react';
+import { getNewPrompts } from '@/data/prompts';
 
 const changelog = [
   {
@@ -44,24 +45,7 @@ const changelog = [
 ];
 
 export default function NovidadesPage() {
-  const [newPrompts, setNewPrompts] = useState<Prompt[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchNewPrompts = async () => {
-      try {
-        const res = await fetch('/api/prompts?new=true');
-        const data = await res.json();
-        setNewPrompts(data.prompts || []);
-      } catch (error) {
-        console.error('Error fetching new prompts:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchNewPrompts();
-  }, []);
+  const newPrompts = useMemo(() => getNewPrompts(), []);
 
   const getTypeColor = (type: string) => {
     switch (type) {
@@ -98,9 +82,7 @@ export default function NovidadesPage() {
           </div>
           <div>
             <h1 className="text-3xl font-semibold text-[var(--neutral-50)]">Novidades</h1>
-            <p className="text-sm text-[var(--neutral-400)]">
-              Veja o que há de novo na PromptoTeca
-            </p>
+            <p className="text-sm text-[var(--neutral-400)]">Veja o que há de novo na PromptoTeca</p>
           </div>
         </div>
         <span className="rounded-full border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.03)] px-4 py-2 text-sm text-[var(--neutral-400)]">
@@ -119,7 +101,7 @@ export default function NovidadesPage() {
               <h2 className="text-2xl font-semibold text-[var(--neutral-50)]">Prompts Adicionados Recentemente</h2>
             </div>
           </div>
-          <PromptGrid prompts={newPrompts} isLoading={isLoading} />
+          <PromptGrid prompts={newPrompts} isLoading={false} />
         </section>
       )}
 

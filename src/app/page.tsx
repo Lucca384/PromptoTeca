@@ -1,5 +1,6 @@
-﻿import { redirect } from 'next/navigation';
+﻿import BibliotecaPage from './biblioteca/page';
 
 export default function Home() {
-  redirect('/biblioteca');
+  return <BibliotecaPage />;
 }
+

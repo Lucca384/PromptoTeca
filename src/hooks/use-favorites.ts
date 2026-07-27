@@ -4,19 +4,17 @@ import { useState, useEffect, useCallback } from 'react';
 import { STORAGE_KEYS } from '@/lib/constants';
 
 export function useFavorites() {
-  const [favorites, setFavorites] = useState<string[]>([]);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    if (typeof window === 'undefined') return [];
     const stored = localStorage.getItem(STORAGE_KEYS.FAVORITES);
-    if (stored) {
-      try {
-        setFavorites(JSON.parse(stored));
-      } catch {
-        setFavorites([]);
-      }
+    if (!stored) return [];
+
+    try {
+      return JSON.parse(stored);
+    } catch {
+      return [];
     }
-  }, []);
+  });
 
   const saveFavorites = useCallback((newFavorites: string[]) => {
     localStorage.setItem(STORAGE_KEYS.FAVORITES, JSON.stringify(newFavorites));
