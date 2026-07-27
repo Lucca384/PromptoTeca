@@ -3,6 +3,8 @@ import { join } from 'path';
 
 const nextConfig: NextConfig = {
   output: 'export',
+  basePath: '/PromptoTeca',
+  assetPrefix: '/PromptoTeca/',
   turbopack: {
     root: __dirname,
   },
